@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avatar Bundle Publisher</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101116;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 27px;
+}
+
+.subtitle {
+  color: #999;
+}
+
+.card {
+  background: #1b1d26;
+  border: 1px solid #30323d;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 18px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  background: #101116;
+  color: white;
+  border: 1px solid #383b48;
+  border-radius: 8px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 9px;
+  background: #7655ed;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.status {
+  color: #b5a5ff;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.result {
+  background: #101116;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Avatar Bundle Publisher</h1>
+<p class="subtitle">Private Roblox Creator Dashboard</p>
+
+<div class="card">
+  <h3>Avatar Information</h3>
+
+  <input id="name" placeholder="Bundle Name">
+
+  <textarea id="description"
+    placeholder="Bundle Description"></textarea>
+
+  <h3>Avatar Data</h3>
+
+  <input type="file" id="avatarFile"
+    accept=".json,application/json">
+
+  <button onclick="loadAvatar()">
+    Load Avatar Data
+  </button>
+
+  <p id="fileStatus" class="status">
+    Waiting for avatar data
+  </p>
+</div>
+
+<div class="card">
+  <h3>Avatar Preview Data</h3>
+  <div id="preview" class="result">
+    No avatar loaded.
+  </div>
+</div>
+
+<div class="card">
+  <h3>Publishing</h3>
+
+  <button id="saveButton" onclick="saveAvatar()">
+    Save Avatar Bundle
+  </button>
+
+  <button id="publishButton" disabled>
+    Publish to Roblox
+  </button>
+
+  <p id="status" class="status">
+    Backend not connected yet.
+  </p>
+</div>
+
+<div class="card">
+  <h3>Publishing Results</h3>
+
+  <p>Bundle ID:</p>
+  <div id="bundleId" class="result">Not published</div>
+
+  <p>Asset IDs:</p>
+  <div id="assetIds" class="result">None yet</div>
+
+  <p>Status:</p>
+  <div id="publishStatus" class="result">Waiting</div>
+</div>
+
+</div>
+
+<script>
+let avatarData = null;
+
+function loadAvatar() {
+  const file = document.getElementById("avatarFile").files[0];
+
+  if (!file) {
+    alert("Select an avatar JSON file first.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      avatarData = JSON.parse(reader.result);
+
+      document.getElementById("fileStatus").textContent =
+        "Avatar data loaded successfully.";
+
+      document.getElementById("preview").textContent =
+        JSON.stringify(avatarData, null, 2);
+
+    } catch (error) {
+      avatarData = null;
+      document.getElementById("fileStatus").textContent =
+        "Invalid JSON file.";
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+async function saveAvatar() {
+  const name = document.getElementById("name").value.trim();
+  const description =
+    document.getElementById("description").value.trim();
+
+  if (!name || !avatarData) {
+    alert("Enter a name and load avatar data.");
+    return;
+  }
+
+  const payload = {
+    name,
+    description,
+    avatar: avatarData
+  };
+
+  document.getElementById("status").textContent =
+    "Preparing avatar data...";
+
+  // Backend connection will be added next.
+  document.getElementById("status").textContent =
+    "Avatar loaded locally. Backend connection is not configured.";
+
+  console.log("Avatar payload:", payload);
+}
+</script>
+</body>
+</html>
